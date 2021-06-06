@@ -7,7 +7,6 @@ import random
 import numpy as np
 import math
 
-root_path = "D:\\Bingo\\";
 bingo_path = "bingo.png";
 
 h_w = 139*2
@@ -64,7 +63,7 @@ def paste_image(src, paste, x, y):
 		offset += font.getsize(line)[1]
 	src.paste(im, ((21+163*y)*2,(274+163*x)*2))
 
-image = read_image("%s%s" % (root_path,bingo_path))
+image = read_image(bingo_path)
 
 cards = listdir("cards/")
 random.shuffle(cards)
@@ -76,6 +75,5 @@ for i in range(5):
 			print(x)
 			paste_image(image,cards[x],i,j)
 			x = x + 1
-			#image.save("%sbingo_out_%s.png" %(root_path,x))
 
-image.save("%sbingo_out.png" % (root_path))
+image.save("bingo_out.png")
