@@ -1,0 +1,10 @@
+{
+    "direct":{
+        "type":"direct",
+        "color":"#e41318ff"
+    },
+    "e3":{
+        "type":"e3",
+        "color":"#353a4aff"
+    }
+}
