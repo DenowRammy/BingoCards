@@ -17,7 +17,7 @@ highlight_opacity = 170
 shadow_opacity = 128
 celltop_opacity = 140
 cellbottom_opacity = 80
-letters_per_line = 10
+letters_per_line = 13
 name_line_size = 150
 
 with open("presets.json", "r") as read_file:
