@@ -7,7 +7,6 @@ import textwrap
 import random
 import numpy as np
 import math
-import json
 
 #variables for layout
 margins_size = 33
@@ -17,30 +16,55 @@ highlight_opacity = 170
 shadow_opacity = 128
 celltop_opacity = 140
 cellbottom_opacity = 80
-letters_per_line = 13
+letters_per_line = 10
 name_line_size = 150
 
-with open("presets.json", "r") as read_file:
-    presets = json.load(read_file)
+presets = {
+    "direct":{
+        "type":"direct",
+        "color":"#e41318ff",
+        "namecolor":(255,255,255)
+    },
+    "e3":{
+        "type":"e3",
+        "color":"#353a4aff",
+        "namecolor":(255,255,255)
+    },
+    "stateofplay":{
+        "type":"stateofplay",
+        "color":"#006fcdff",
+        "namecolor":(255,255,255)
+    },
+    "tga":{
+        "type":"tga",
+        "color":"#eeeeeeff",
+        "namecolor":(60,60,60)
+    }
+}
 
 while True:
     print("What type of card are you doing? Choices are " + ', '.join(presets.keys()))
     response = input()
     type = presets[response]["type"]
     color = presets[response]["color"]
+    namecolor = presets[response]["namecolor"]
     if response not in presets:
         print("Please try again")
         continue
-    free = True
-    print("Type 'no' if you would like to exclude the free space")
-    if input() == "no":
-        free = False
-    print("How many columns and rows should there be?")
-    size = int(input())
-    print("What is the name on the card?")
-    name = input()
-    print("Card printing imminently...")
     break
+
+free = True
+print("Type 'no' if you would like to exclude the free space")
+if input() == "no":
+    free = False
+
+print("How many columns and rows should there be?")
+size = int(input())
+
+print("What is the name on the card?")
+name = input()
+
+print("Card printing imminently...")
 
 #functions
 def make_shadow_box(width,height,toplight,bottomlight):
@@ -152,14 +176,14 @@ for index,value in enumerate(cards_array):
     )
 
 #write name at the bottom of the card
-font = ImageFont.truetype("LemonMilk.otf", 150)
+font = ImageFont.truetype("SylexiadSansMedium-Bold.otf", 270)
 draw = ImageDraw.Draw(image)
 draw.text(
     (
         margins_size,
         image.height-margins_size-math.floor(name_line_size*1.25)
     ),
-    name,font=font,fill=(255,255,255)
+    name,font=font,fill=namecolor
 )
 
 #size * (margins_size + cells_size) + margins_size * 2 + logo.height)
