@@ -1,23 +1,12 @@
+import textwrap, random, numpy as np, math, os
+from PIL import Image, ImageFont, ImageDraw
+from time import perf_counter
 from os import listdir
-import os
-from PIL import Image
-from PIL import ImageFont
-from PIL import ImageDraw
-import textwrap
-import random
-import numpy as np
-import math
 
 #variables for layout
-margins_size = 33
-cells_size = 288
-border_size = 10
-highlight_opacity = 170
-shadow_opacity = 128
-celltop_opacity = 140
-cellbottom_opacity = 80
-letters_per_line = 10
-name_line_size = 150
+margins_size, cells_size, border_size = (33, 288, 10)
+highlight_opacity, shadow_opacity, celltop_opacity, cellbottom_opacity = (170, 128, 140, 80)
+letters_per_line, name_line_size = (10, 150)
 
 presets = {
     "direct":{
@@ -42,29 +31,39 @@ presets = {
     }
 }
 
-while True:
-    print("What type of card are you doing? Choices are " + ', '.join(presets.keys()))
-    response = input()
+if True:
+    while True:
+        print("What type of card are you doing? Choices are " + ', '.join(presets.keys()))
+        response = input()
+        type = presets[response]["type"]
+        color = presets[response]["color"]
+        namecolor = presets[response]["namecolor"]
+        if response not in presets:
+            print("Please try again")
+            continue
+        break
+
+    free = True
+    print("Type 'no' if you would like to exclude the free space")
+    if input() == "no":
+        free = False
+
+    print("How many columns and rows should there be?")
+    size = int(input())
+
+    print("What is the name on the card?")
+    name = input()
+else:
+    response = "e3"
     type = presets[response]["type"]
     color = presets[response]["color"]
     namecolor = presets[response]["namecolor"]
-    if response not in presets:
-        print("Please try again")
-        continue
-    break
-
-free = True
-print("Type 'no' if you would like to exclude the free space")
-if input() == "no":
-    free = False
-
-print("How many columns and rows should there be?")
-size = int(input())
-
-print("What is the name on the card?")
-name = input()
+    free = True
+    size = 5
+    name = "ram"
 
 print("Card printing imminently...")
+
 
 #functions
 def make_shadow_box(width,height,toplight,bottomlight):
@@ -84,10 +83,17 @@ def make_shadow_box(width,height,toplight,bottomlight):
     ],fill=bottomlight)
     return border_edges_image
 
+t_start = perf_counter()
+
 #get assets
 if free:
-    freespace = Image.open("assets/" + type + "_free.png").convert("RGBA")
-logo = Image.open("assets/"+type+"_logo.png").convert("RGBA")
+    with Image.open("assets/" + type + "_free.png") as freespace:
+        freespace.convert("RGBA")
+with Image.open("assets/"+type+"_logo.png") as logo:
+    logo.convert("RGBA")
+
+print("Checkpoint 1", perf_counter()-t_start)
+t_start = perf_counter()
 
 #calculate and create background at size
 width = size * (margins_size + cells_size) + margins_size
@@ -104,6 +110,9 @@ image.alpha_composite(
         (0,0,0,shadow_opacity)
     )
 )
+
+print("Checkpoint 2", perf_counter()-t_start)
+t_start = perf_counter()
 
 #draw logo
 image.alpha_composite(logo,(math.floor(image.width/2 - logo.width / 2),margins_size),(0,0))
@@ -152,7 +161,6 @@ def get_card(path):
 
     return im
 
-
 #get images and crop
 cards = listdir("cards/")
 random.shuffle(cards)
@@ -161,6 +169,9 @@ for index,value in enumerate(cards):
     if free and math.floor((size*size)/2) == index:
         cards_array.append(freespace)
     cards_array.append(get_card(value))
+
+print("Checkpoint 3", perf_counter()-t_start)
+t_start = perf_counter()
 
 for index,value in enumerate(cards_array):
     if (index>=size*size):
@@ -175,6 +186,9 @@ for index,value in enumerate(cards_array):
         value
     )
 
+print("Checkpoint 4", perf_counter()-t_start)
+t_start = perf_counter()
+
 #write name at the bottom of the card
 font = ImageFont.truetype("SylexiadSansMedium-Bold.otf", 270)
 draw = ImageDraw.Draw(image)
@@ -185,6 +199,8 @@ draw.text(
     ),
     name,font=font,fill=namecolor
 )
+
+print("Checkpoint 5", perf_counter()-t_start)
 
 #size * (margins_size + cells_size) + margins_size * 2 + logo.height)
 #save image
