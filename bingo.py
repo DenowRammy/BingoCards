@@ -6,7 +6,7 @@ from os import listdir
 #variables for layout
 margins_size, cells_size, border_size = (33, 288, 10)
 highlight_opacity, shadow_opacity, celltop_opacity, cellbottom_opacity = (170, 128, 140, 80)
-letters_per_line, name_line_size = (10, 150)
+letters_per_line, name_line_size = (13, 150)
 
 presets = {
     "direct":{
